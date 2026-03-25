@@ -1,0 +1,16 @@
+{
+  "name": "qwen-model-test",
+  "version": "1.0.0",
+  "description": "百炼平台 Qwen 模型测试案例",
+  "type": "module",
+  "scripts": {
+    "dev": "node index.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "openai": "^4.77.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0"
+  }
+}
