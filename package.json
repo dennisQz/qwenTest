@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node index.js",
-    "start": "node index.js"
+    "start": "node index_panduan.js",
+    "start2": "node index_flux.js"
   },
   "dependencies": {
     "openai": "^4.77.0"
