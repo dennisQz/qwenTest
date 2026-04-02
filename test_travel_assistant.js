@@ -6,24 +6,33 @@ const requestData = {
     sessionId: "0A706E38120977852C48E0A483A1C2CD",
     deviceId: "DBED7226-A7DC-450D-8E5E-223",
     sceneId: 3,
+    first: 1,
     scene: "看演出",
-    targetLanguage: "zh",
-    nativeLanguage: "ko"
+    targetLanguage: "en",
+    nativeLanguage: "zh"
 };
 
 const LOG_FILE = 'request_log.txt';
 
-function log(message) {
-    const timestamp = new Date().toISOString();
-    const logMessage = `[${timestamp}] ${message}\n`;
-    fs.appendFileSync(LOG_FILE, logMessage);
-    console.log(message);
+function log(data, level = 'INFO') {
+    const logEntry = {
+        timestamp: new Date().toISOString(),
+        level: level,
+        ...data
+    };
+    const formatted = JSON.stringify(logEntry, null, 2);
+    fs.appendFileSync(LOG_FILE, formatted + '\n');
+    console.log(formatted);
 }
 
-async function makeRequest(requestNumber) {
+async function makeRequest(sceneId, nativeLanguage, targetLanguage ) {
     const startTime = Date.now();
     
     try {
+        requestData.sceneId = sceneId;
+        requestData.targetLanguage = targetLanguage;
+        requestData.nativeLanguage = nativeLanguage;
+
         const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
@@ -35,13 +44,29 @@ async function makeRequest(requestNumber) {
         const endTime = Date.now();
         const duration = endTime - startTime;
 
-        const responseData = await response.text();
+        const responseText = await response.text();
         
-        const logEntry = `Request #${requestNumber} | Status: ${response.status} | Duration: ${duration}ms | Response: ${responseData}`;
-        log(logEntry);
+        let responseData;
+        try {
+            responseData = JSON.parse(responseText);
+        } catch {
+            responseData = responseText;
+        }
+        
+        const logEntry = {
+            type: 'request',
+            requestNumber: `${targetLanguage}-${nativeLanguage}-${sceneId}`,
+            targetLanguage,
+            nativeLanguage,
+            sceneId,
+            status: response.status,
+            duration: `${duration}ms`,
+            response: responseData
+        };
+        log(logEntry, 'INFO');
 
         return {
-            requestNumber,
+            requestNumber: `${targetLanguage}-${nativeLanguage}-${sceneId}`,
             status: response.status,
             duration,
             success: response.ok,
@@ -52,11 +77,20 @@ async function makeRequest(requestNumber) {
         const endTime = Date.now();
         const duration = endTime - startTime;
         
-        const logEntry = `Request #${requestNumber} | Status: ERROR | Duration: ${duration}ms | Error: ${error.message}`;
-        log(logEntry);
+        const logEntry = {
+            type: 'request_error',
+            requestNumber: `${targetLanguage}-${nativeLanguage}-${sceneId}`,
+            targetLanguage,
+            nativeLanguage,
+            sceneId,
+            status: 'ERROR',
+            duration: `${duration}ms`,
+            error: error.message
+        };
+        log(logEntry, 'ERROR');
 
         return {
-            requestNumber,
+            requestNumber: `${targetLanguage}-${nativeLanguage}-${sceneId}`,
             status: 'ERROR',
             duration,
             success: false,
@@ -66,40 +100,69 @@ async function makeRequest(requestNumber) {
 }
 
 async function runTests() {
-    log('========================================');
-    log('开始测试请求 - 总共20次');
-    log('========================================');
+    const langs = ['ar','zh','ja'];
+    const maxNum = 12;
+    
+    const startLog = {
+        type: 'test_start',
+        message: '开始测试请求',
+        totalExpected: (langs.length * (langs.length - 1)) * maxNum
+    };
+    log(startLog, 'INFO');
 
-    const totalRequests = 20;
+    let totalRequests = 1;
+
     const results = [];
 
-    for (let i = 1; i <= totalRequests; i++) {
-        const result = await makeRequest(i);
-        results.push(result);
-        
-        if (i < totalRequests) {
-            await new Promise(resolve => setTimeout(resolve, 100));
+    for (let index = 0; index < langs.length; index++) {
+        const tar = langs[index];
+        for (let j = 0; j < langs.length; j++) {
+            const nav = langs[j];
+            if (tar == nav) {
+                continue;
+            }
+            const testGroupLog = {
+                type: 'test_group',
+                targetLanguage: tar,
+                nativeLanguage: nav,
+                sceneIds: Array.from({length: maxNum}, (_, i) => i + 1)
+            };
+            log(testGroupLog, 'INFO');
+            for (let m = 1; m <= maxNum; m++) {
+                totalRequests++;
+                const result = await makeRequest(m, nav, tar);
+                results.push(result);
+                
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
         }
     }
+   
 
     const successfulRequests = results.filter(r => r.success).length;
     const failedRequests = results.filter(r => !r.success).length;
     const totalDuration = results.reduce((sum, r) => sum + r.duration, 0);
     const averageDuration = totalDuration / totalRequests;
 
-    log('========================================');
-    log('测试完成 - 汇总信息');
-    log('========================================');
-    log(`总请求数: ${totalRequests}`);
-    log(`成功请求: ${successfulRequests}`);
-    log(`失败请求: ${failedRequests}`);
-    log(`总耗时: ${totalDuration}ms`);
-    log(`平均耗时: ${averageDuration.toFixed(2)}ms`);
+    const summary = {
+        type: 'summary',
+        totalRequests: totalRequests,
+        successfulRequests: successfulRequests,
+        failedRequests: failedRequests,
+        totalDuration: `${totalDuration}ms`,
+        averageDuration: `${averageDuration.toFixed(2)}ms`
+    };
+    log(summary, 'INFO');
 
     return results;
 }
 
 runTests().catch(error => {
-    log(`脚本执行错误: ${error.message}`);
+    const errorLog = {
+        type: 'script_error',
+        message: '脚本执行错误',
+        error: error.message
+    };
+    log(errorLog, 'ERROR');
     process.exit(1);
 });

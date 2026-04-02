@@ -1,0 +1,500 @@
+{
+  "0": {
+    "id": 2055,
+    "default_phrases": [
+      "¿Puede proporcionarme 10 frases comunes que pueda usar en un restaurante?",
+      "¡Excelente! Aquí tiene 10 frases comunes relacionadas con restaurantes, con su traducción al árabe:"
+    ],
+    "intentions": [
+      "Comer en el restaurante",
+      "Hacer un pedido",
+      "Pagar la cuenta"
+    ],
+    "native_language": "es",
+    "pair1": [
+      "Por ahora, ¿tiene alguna situación específica en mente, como pedir bebidas, presentar una queja o preguntar sobre los ingredientes? ¡No dude en preguntar!",
+      "Por favor, describa la situación que tiene en mente."
+    ],
+    "pair2": [],
+    "phrases": [
+      {
+        "original": "Disculpe, ¿cuánto tiempo más tardará nuestra comida?",
+        "translated": "عذرًا، كم من الوقت سيستغرق وصول طعامنا؟"
+      },
+      {
+        "original": "Una mesa para dos, por favor.",
+        "translated": "طاولة لشخصين، من فضلكم."
+      },
+      {
+        "original": "¿Podríamos ver el menú, por favor?",
+        "translated": "هل يمكننا الاطلاع على القائمة، من فضلكم؟"
+      },
+      {
+        "original": "¿Tienen algún plato especial que puedan recomendarnos?",
+        "translated": "هل لديكم أي أطباق مميزة تنصحون بها؟"
+      },
+      {
+        "original": "Quisiera pedir esto y esto.",
+        "translated": "أود طلب هذا وهذا."
+      },
+      {
+        "original": "Un vaso de agua, por favor. Gracias.",
+        "translated": "كوب من الماء، من فضلكم. شكرًا."
+      },
+      {
+        "original": "La cuenta, por favor.",
+        "translated": "الفاتورة، من فضلكم."
+      },
+      {
+        "original": "¿Puedo pagar con tarjeta de crédito?",
+        "translated": "هل يمكنني الدفع باستخدام بطاقة الائتمان؟"
+      },
+      {
+        "original": "¿Podrían empacar esto para llevar, por favor?",
+        "translated": "هل يمكنكم تغليف هذا لتناوله خارج المطعم، من فضلكم؟"
+      },
+      {
+        "original": "La comida estuvo deliciosa, gracias.",
+        "translated": "كان الطعام لذيذًا جدًّا، شكرًا لكم."
+      }
+    ],
+    "scene_id": 1,
+    "target_language": "ar"
+  },
+  "1": {
+    "id": 2058,
+    "default_phrases": [
+      "¿Puede proporcionarme 10 frases comunes que pueda usar en el transporte público?",
+      "¡Fantástico! Aquí tienes 10 frases comunes sobre el transporte público, con su traducción al árabe:"
+    ],
+    "intentions": [
+      "Tomar autobús o metro",
+      "Comprar billetes",
+      "Hacer transbordo"
+    ],
+    "native_language": "es",
+    "pair1": [
+      "Por ahora, ¿tienes alguna situación específica en mente? Por ejemplo: preguntar sobre una parada de autobús, el precio del billete o cuándo bajarse. ¡No dudes en preguntar!",
+      "Por favor, descríbeme la situación que tienes en mente."
+    ],
+    "pair2": [],
+    "phrases": [
+      {
+        "original": "¿Este autobús va a la terminal?",
+        "translated": "هل تذهب هذه الحافلة إلى المحطة؟"
+      },
+      {
+        "original": "¿Cuál es la próxima parada?",
+        "translated": "ما هي المحطة التالية؟"
+      },
+      {
+        "original": "¿Dónde puedo comprar un billete?",
+        "translated": "أين يمكنني شراء تذكرة؟"
+      },
+      {
+        "original": "Un billete para XX, por favor.",
+        "translated": "تذكرة واحدة إلى XX، من فضلك."
+      },
+      {
+        "original": "¿Tengo que hacer transbordo?",
+        "translated": "هل عليّ تغيير المركبة؟"
+      },
+      {
+        "original": "¿Cuánto falta para que llegue el próximo tren del metro?",
+        "translated": "كم من الوقت يبقى حتى وصول قطار المترو القادم؟"
+      },
+      {
+        "original": "Disculpe, permítame pasar.",
+        "translated": "عذرًا، من فضلك اسمح لي بالمرور."
+      },
+      {
+        "original": "¿Está ocupado este asiento?",
+        "translated": "هل هذا المقعد مشغول؟"
+      },
+      {
+        "original": "Disculpe, ¿dónde puedo transbordar a la línea 2 para llegar a XX?",
+        "translated": "عذرًا، أين يمكنني التبديل إلى الخط 2 للوصول إلى XX؟"
+      },
+      {
+        "original": "¿Cómo llego a XX?",
+        "translated": "كيف أصل إلى XX؟"
+      }
+    ],
+    "scene_id": 4,
+    "target_language": "ar"
+  },
+  "2": {
+    "id": 2059,
+    "default_phrases": [
+      "¿Puedes proporcionarme 10 frases comunes que pueda usar en lugares turísticos?",
+      "¡Fantástico! Aquí tienes 10 frases comunes sobre lugares turísticos, con su traducción al árabe:"
+    ],
+    "intentions": [
+      "Turismo",
+      "Tomar fotos",
+      "Comprar entradas"
+    ],
+    "native_language": "es",
+    "pair1": [
+      "Por ahora, ¿tienes alguna situación específica en mente, como preguntar sobre el precio de las entradas, encontrar un estacionamiento o contratar un servicio de guía turístico? ¡No dudes en preguntar.",
+      "Por favor, descríbeme la situación que tienes en mente."
+    ],
+    "pair2": [],
+    "phrases": [
+      {
+        "original": "¿Cuánto cuesta la entrada?",
+        "translated": "كم تبلغ رسوم الدخول؟"
+      },
+      {
+        "original": "¿Hay entradas para estudiantes disponibles?",
+        "translated": "هل توجد تذاكر مخصصة للطلاب؟"
+      },
+      {
+        "original": "¿A qué hora abre la atracción?",
+        "translated": "في أي وقت يفتح معلم الجذب؟"
+      },
+      {
+        "original": "¿Qué cosas divertidas se pueden hacer aquí?",
+        "translated": "ما الأنشطة الممتعة التي يمكن القيام بها هنا؟"
+      },
+      {
+        "original": "¿Podría hacernos una foto?",
+        "translated": "هل يمكنك أن تلتقط لنا صورة؟"
+      },
+      {
+        "original": "¿Dónde está el autobús turístico?",
+        "translated": "أين يتواجد حافلة السياحة؟"
+      },
+      {
+        "original": "¿Dónde está el baño?",
+        "translated": "أين находится الحمام؟"
+      },
+      {
+        "original": "¿Cuál es el mejor lugar para ver las vistas?",
+        "translated": "ما أفضل مكان للاستمتاع بالمناظر؟"
+      },
+      {
+        "original": "El paisaje aquí es hermoso.",
+        "translated": "المنظر هنا جميلٌ جدًّا."
+      },
+      {
+        "original": "¿Hay visitas guiadas disponibles?",
+        "translated": "هل تتوفر جولات إرشادية؟"
+      }
+    ],
+    "scene_id": 5,
+    "target_language": "ar"
+  },
+  "3": {
+    "id": 2060,
+    "default_phrases": [
+      "¿Puedes proporcionarme 10 frases comunes que pueda usar al tomar un taxi o al usar un servicio de taxis?",
+      "¡Genial! Aquí tienes 10 frases comunes sobre taxis o servicios de taxis, con su traducción al árabe:"
+    ],
+    "intentions": [
+      "Tomar un taxi",
+      "Indicar el destino",
+      "Pago"
+    ],
+    "native_language": "es",
+    "pair1": [
+      "Por ahora, ¿qué es lo que más quieres hacer ahora? Por ejemplo: preguntar la dirección, el precio o pedir una factura. ¡Adelante, no dudes en preguntar!",
+      "Por favor, descríbeme la situación que tienes en mente."
+    ],
+    "pair2": [],
+    "phrases": [
+      {
+        "original": "¿Dónde puedo conseguir un taxi?",
+        "translated": "أين يمكنني أخذ تاكسي؟"
+      },
+      {
+        "original": "Por favor, lléveme a esta dirección.",
+        "translated": "من فضلك خذني إلى هذا العنوان."
+      },
+      {
+        "original": "¿Cuánto costará aproximadamente?",
+        "translated": "كم ستكلف تقريباً؟"
+      },
+      {
+        "original": "¿Podría usar el taxímetro, por favor?",
+        "translated": "هل يمكنك استخدام عداد التاكسي من فضلك؟"
+      },
+      {
+        "original": "Por favor, conduzca un poco más rápido, tengo prisa.",
+        "translated": "من فضلك قُدْ بسرعة أكبر قليلاً، أنا مستعجل."
+      },
+      {
+        "original": "Por favor, pare aquí.",
+        "translated": "من فضلك توقف هنا."
+      },
+      {
+        "original": "¿Acepta tarjetas o pagos móviles?",
+        "translated": "هل تقبل بطاقات الدفع أو الدفع عبر الهاتف المحمول؟"
+      },
+      {
+        "original": "¿Podría darme un recibo, por favor?",
+        "translated": "هل يمكنني الحصول على إثبات دفع من فضلك؟"
+      },
+      {
+        "original": "Gracias, conductor.",
+        "translated": "شكراً لك يا سائق."
+      },
+      {
+        "original": "¿Cuánto falta aún?",
+        "translated": "كم تبقى بعد من المسافة؟"
+      }
+    ],
+    "scene_id": 6,
+    "target_language": "ar"
+  },
+  "4": {
+    "id": 2061,
+    "default_phrases": [
+      "¿Puede proporcionarme 10 frases comunes que pueda usar en una farmacia?",
+      "¡Excelente! Aquí tiene 10 frases comunes relacionadas con la farmacia, con traducción al árabe:"
+    ],
+    "intentions": [
+      "Compra de medicamentos",
+      "Consulta",
+      "Pago"
+    ],
+    "native_language": "es",
+    "pair1": [
+      "Por ahora, ¿tiene alguna situación específica en mente, como pedir instrucciones sobre cómo tomar un medicamento, frases relacionadas con el uso del seguro médico, la duración del tratamiento, etc.? ¡No dude en preguntar!",
+      "Por favor, describa la situación que tiene en mente."
+    ],
+    "pair2": [],
+    "phrases": [
+      {
+        "original": "¿Tiene medicamento para el resfriado?",
+        "translated": "هل لديكم دواء للبرد؟"
+      },
+      {
+        "original": "¿Cómo debo tomar este medicamento?",
+        "translated": "كيف يجب أن آخذ هذا الدواء؟"
+      },
+      {
+        "original": "¿Tiene analgésicos?",
+        "translated": "هل لديكم مسكنات للألم؟"
+      },
+      {
+        "original": "¿Viene con un folleto de instrucciones?",
+        "translated": "هل يحتوي على كتيب إرشادات؟"
+      },
+      {
+        "original": "¿Este medicamento tiene efectos secundarios?",
+        "translated": "هل لهذا الدواء آثار جانبية؟"
+      },
+      {
+        "original": "¿Puedo usar mi tarjeta de seguro médico?",
+        "translated": "هل يمكنني استخدام بطاقة التأمين الصحي الخاصة بي؟"
+      },
+      {
+        "original": "¿Podría darme una caja de tiritas, por favor?",
+        "translated": "هل يمكنني الحصول على علبة من الشاش الطبي (التيريتا)، من فضلكم؟"
+      },
+      {
+        "original": "¿Tiene medicamentos para bajar la fiebre?",
+        "translated": "هل لديكم خافضات للحرارة؟"
+      },
+      {
+        "original": "Tengo una pequeña raspadura. ¿Tiene antiséptico y tiritas?",
+        "translated": "لدي جرح سطحي صغير. هل لديكم مطهر وشاش طبي (تيريتا)؟"
+      },
+      {
+        "original": "¿A qué hora cierran?",
+        "translated": "في أي وقت تغلقون؟"
+      }
+    ],
+    "scene_id": 7,
+    "target_language": "ar"
+  },
+  "5": {
+    "id": 2062,
+    "default_phrases": [
+      "¿Puede proporcionarme 10 frases comunes que pueda usar en servicios de emergencia?",
+      "¡Excelente! Aquí tiene 10 frases comunes sobre servicios de emergencia, con traducción al árabe:"
+    ],
+    "intentions": [
+      "Llamar a la policía",
+      "Primeros auxilios",
+      "Pedir ayuda"
+    ],
+    "native_language": "es",
+    "pair1": [
+      "De momento, ¿tiene alguna situación de emergencia específica en mente, como incendio، إصابة تتطلب مساعدة، أو اتصال طارئ؟ ¡No dude en preguntar!",
+      "Por favor, descríbame la situación que tiene en mente."
+    ],
+    "pair2": [],
+    "phrases": [
+      {
+        "original": "Por favor, ayúdeme a llamar a una ambulancia.",
+        "translated": "من فضلك ساعدني في الاتصال بالإسعاف."
+      },
+      {
+        "original": "¿Dónde está el hospital?",
+        "translated": "أين يقع المستشفى؟"
+      },
+      {
+        "original": "Alguien resultó herido.",
+        "translated": "أصيب شخص ما."
+      },
+      {
+        "original": "Por favor, ayúdeme.",
+        "translated": "من فضلك ساعدني."
+      },
+      {
+        "original": "¿Dónde está la comisaría de policía?",
+        "translated": "أين تقع أقرب مركز شرطة؟"
+      },
+      {
+        "original": "He perdido mis pertenencias.",
+        "translated": "لقد فقدت أغراضي."
+      },
+      {
+        "original": "¿Cuál es el número del cuerpo de bomberos?",
+        "translated": "ما هو رقم إدارة الإطفاء؟"
+      },
+      {
+        "original": "He perdido mi pasaporte. ¿Sabe dónde está la comisaría de policía más cercana?",
+        "translated": "لقد فقدت جواز سفري. هل تعرف أين تقع أقرب مركز شرطة؟"
+      },
+      {
+        "original": "¿Hay una salida de emergencia?",
+        "translated": "هل هناك مخرج طوارئ؟"
+      },
+      {
+        "original": "Alguien ha desmayado.",
+        "translated": "إحدى الأشخاص فقد وعيه."
+      }
+    ],
+    "scene_id": 8,
+    "target_language": "ar"
+  },
+  "6": {
+    "id": 2065,
+    "default_phrases": [
+      "¿Puede proporcionarme 10 frases comunes que pueda usar en un museo o galería de arte?",
+      "¡Genial! Aquí tiene 10 frases comunes sobre museos o galerías de arte, con traducción al árabe:"
+    ],
+    "intentions": [
+      "Visita",
+      "Visita guiada",
+      "Compra de entradas"
+    ],
+    "native_language": "es",
+    "pair1": [
+      "Por ahora, ¿tiene alguna situación específica en mente, como pedir un manual introductorio, frases relacionadas con un mapa de ruta, frases para comentar sobre las exposiciones? ¡No dude en preguntar!",
+      "Por favor, describa la situación que tiene en mente."
+    ],
+    "pair2": [],
+    "phrases": [
+      {
+        "original": "¿Cuánto cuesta la entrada?",
+        "translated": "كم تبلغ رسوم الدخول؟"
+      },
+      {
+        "original": "¿Tienen guías de audio?",
+        "translated": "هل لديكم أدلة صوتية؟"
+      },
+      {
+        "original": "¿Quién creó esta obra de arte?",
+        "translated": "من هو الفنان الذي أنشأ هذه القطعة الفنية؟"
+      },
+      {
+        "original": "¿Dónde está la pieza más valiosa del museo?",
+        "translated": "أين توجد أثمن قطعة في المتحف؟"
+      },
+      {
+        "original": "¿Está permitida la fotografía?",
+        "translated": "هل يُسمح بالتصوير الفوتوغرافي؟"
+      },
+      {
+        "original": "¿Hay alguna exposición especial aquí?",
+        "translated": "هل توجد أي معارض خاصة هنا؟"
+      },
+      {
+        "original": "¿Cuánto tiempo dura la visita?",
+        "translated": "كم تدوم الزيارة؟"
+      },
+      {
+        "original": "¿Podrían darnos una introducción?",
+        "translated": "هل يمكنكم إعطاؤنا مقدمةً؟"
+      },
+      {
+        "original": "Estas obras son verdaderamente exquisitas.",
+        "translated": "هذه القطع فعلاً رائعةٌ جداً."
+      },
+      {
+        "original": "¿Dónde está la tienda de souvenirs?",
+        "translated": "أين تقع متجر الهدايا التذكارية؟"
+      }
+    ],
+    "scene_id": 11,
+    "target_language": "ar"
+  },
+  "7": {
+    "id": 2072,
+    "default_phrases": [
+      "¿Podría facilitarme 10 frases comunes que pueda usar en un hotel?",
+      "¡Fantástico! Aquí tienes 10 frases comunes relacionadas con el hotel, junto con sus traducciones al árabe:"
+    ],
+    "intentions": [
+      "Registro de entrada",
+      "تسجيل المغادرة",
+      "خدمة الغرف"
+    ],
+    "native_language": "es",
+    "pair1": [
+      "Por ahora, ¿tienes alguna situación específica en mente, como la ubicación de la habitación، أي خدمة أخرى في الفندق، أو تسجيل المغادرة؟ لا تتردد في طرح أي سؤال.",
+      "Por favor, descríbeme la situación que tienes en mente."
+    ],
+    "pair2": [],
+    "phrases": [
+      {
+        "original": "Hola, tengo una reserva. Aquí está mi pasaporte.",
+        "translated": "مرحبًا، لدي حجز. وهذه جواز سفري."
+      },
+      {
+        "original": "¿Tienen habitaciones disponibles?",
+        "translated": "هل لديكم غرف شاغرة؟"
+      },
+      {
+        "original": "Disculpe, ¿tiene el hotel gimnasio أو غرفة لغسيل الملابس؟",
+        "translated": "عذرًا، هل يحتوي الفندق على صالة ألعاب رياضية أو غرفة لغسيل الملابس؟"
+      },
+      {
+        "original": "¿A qué hora comienza el desayuno?",
+        "translated": "في أي وقت يبدأ الإفطار؟"
+      },
+      {
+        "original": "¿Podría darme la llave de la habitación, por favor?",
+        "translated": "هل يمكنني الحصول على مفتاح الغرفة، من فضلكم؟"
+      },
+      {
+        "original": "¿Podría ayudarme a llevar mi equipaje a la habitación?",
+        "translated": "هل يمكنكم مساعدتي في حمل أمتعتي إلى الغرفة؟"
+      },
+      {
+        "original": "¿Cómo llamo al servicio de habitaciones؟",
+        "translated": "كيف أطلب خدمة الغرف؟"
+      },
+      {
+        "original": "¿A qué hora es la salida del hotel؟",
+        "translated": "في أي وقت يتم تسجيل المغادرة؟"
+      },
+      {
+        "original": "¿Podría darme un recibo/una factura, por favor؟",
+        "translated": "هل يمكنكم إعطائي إيصالاً/فاتورة، من فضلكم؟"
+      },
+      {
+        "original": "¿Puedo dejar mi equipaje aquí?",
+        "translated": "هل يمكنني ترك أمتعتي هنا؟"
+      }
+    ],
+    "scene_id": 2,
+    "target_language": "ar"
+  },
+  "timestamp": "2026-04-02T07:23:40.112Z",
+  "level": "INFO"
+}

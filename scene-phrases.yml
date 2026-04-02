@@ -1,0 +1,250 @@
+defaultPhrases:
+  - Could you provide me with 10 common phrases I can use in {{scene}}?
+  - Fantastic! Here are 10 common phrases related to {{scene}}, along with {{targetLanguageName}} translations：
+scenes:
+  - sceneId: 1
+    scene: Restaurant
+    pair1:
+      - For now,Do you have a specific situation in your mind,like ordering drinks,making a complaint,or asking about ingredients,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Dining
+      - Ordering
+      - Checkout
+    phrases:
+      - Excuse me, how much longer will our food be?
+      - A table for two, please.
+      - Could we see the menu, please?
+      - Do you have any signature dishes to recommend?
+      - I'd like to order this, and this.
+      - A glass of water, please. Thanks.
+      - The bill, please.
+      - Can I pay by credit card?
+      - Could you pack this to go, please?
+      - The food was delicious, thank you.
+  - sceneId: 2
+    scene: Hotel
+    pair1:
+      - For now,Do you have a specific situation in your mind,like room location,Any other hotel service,or check out,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Check-in
+      - Check-out
+      - Room Service
+    phrases:
+      - Hello, I have a reservation, Here is my passport.
+      - Do you have any vacancies?
+      - Excuse me, does the hotel have a gym or a laundry room?
+      - What time does breakfast start?
+      - Could I have a room key, please?
+      - Could you help me take my luggage to the room?
+      - How do I call room service?
+      - What time is check-out?
+      - Could you write me a receipt/invoice?
+      - Can I leave my luggage here?
+  - sceneId: 3
+    scene: Airport
+    pair1:
+      - For now,Do you have a specific situation in your mind,like check in,Baggage Claim,or car rent service,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Check-in
+      - Boarding
+      - Baggage Check
+    phrases:
+      - Where is the check-in counter?
+      - I'd like a window seat, please.
+      - Is this flight delayed?
+      - I need to check this baggage.
+      - Where is the boarding gate?
+      - The plane is about to take off.
+      - Do I need to take out my laptop and power bank?
+      - Where is the duty-free shop?
+      - I can't find my suitcase.
+      - Do you have a wheelchair service?
+  - sceneId: 4
+    scene: Public Transportation
+    pair1:
+      - For now,Do you have a specific situation in your mind,like asking for bus stop,Ticket price,or get off,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Taking Bus/Subway
+      - Buying Tickets
+      - Transferring
+    phrases:
+      - Does this bus go to the terminal?
+      - What is the next stop?
+      - Where can I buy a ticket?
+      - One ticket to XX, please.
+      - Do I need to transfer?
+      - How long until the next subway train?
+      - Excuse me, please let me pass.
+      - Is this seat taken?
+      - Excuse me, where can I transfer to Line 2 to get to XX?
+      - How do I get to XX?
+  - sceneId: 5
+    scene: Tourist Attractions
+    pair1:
+      - For now,Do you have a specific situation in your mind,like Asking about ticket price,Find a packing lot,or tour guide service,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Sightseeing
+      - Taking Photos
+      - Buying Tickets
+    phrases:
+      - How much is the entrance fee?
+      - Are there student tickets available?
+      - What time does the attraction open?
+      - What are the fun things to do here?
+      - Could you take a picture for us?
+      - Where is the sightseeing bus?
+      - Where is the restroom?
+      - Where is the best viewing spot?
+      - The scenery here is beautiful.
+      - Is there a guided tour available?
+  - sceneId: 6
+    scene: Taxi or Taxi Service
+    pair1:
+      - For now,What do you most want to do now,like asking for destination,How much,or asking for an invoice,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Taking Taxi
+      - Telling Destination
+      - Payment
+    phrases:
+      - Where can I get a taxi?
+      - Please take me to this address.
+      - Roughly how much will it be?
+      - Could you use the meter, please?
+      - Please drive a bit faster, I'm in a hurry.
+      - Please stop here.
+      - Do you accept cards or mobile payments?
+      - Could I have a receipt, please?
+      - Thank you, driver.
+      - How much further is it?
+  - sceneId: 7
+    scene: pharmacy
+    pair1:
+      - For now,Do you have a specific situation in your mind,like asking for instructions on taking medicine,Phrased related to using insurance,Duration of medication,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Buying Medicine
+      - Consultation
+      - Payment
+    phrases:
+      - Do you have cold medicine?
+      - How should I take this medicine?
+      - Do you have any painkillers?
+      - Is there an instruction leaflet?
+      - Does this medicine have any side effects?
+      - Can I use my medical insurance card?
+      - Could I have a box of Band-Aids, please?
+      - Do you have any fever reducers?
+      - I've got a bit of a scrape. Do you have any antiseptic and Band-Aids?
+      - What time do you close?
+  - sceneId: 8
+    scene: Emergency Services
+    pair1:
+      - For now,Do you have a specific emergency situation in your mind,like Fire,Injured and need help,emergency call,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Calling Police
+      - First Aid
+      - Calling for Help
+    phrases:
+      - Please help me call an ambulance.
+      - Where is the hospital?
+      - Someone is injured.
+      - Please help me.
+      - Where is the police station?
+      - I've lost my belongings.
+      - What is the number for the fire department?
+      - I've lost my passport. Do you know where the nearest police station is?
+      - Is there an emergency exit?
+      - Someone has fainted.
+  - sceneId: 9
+    scene: Beach or poolside
+    pair1:
+      - For now,Could you please provide me with the context of the local event or festival you’re attend,like cultural festival,food festival,or music festival.Please provide the context
+      - Please provide the activities that you attend.
+    pair2:
+      - Do you have a specific situation in your mind,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Swimming
+      - Sunbathing
+      - Beach Sports
+    phrases:
+      - Look! The waves over there are really big.
+      - Remember to apply sunscreen, the UV rays here are very strong.
+      - The sand on this beach is so fine, it feels like stepping on cotton.
+      - How about playing volleyball on the beach?
+      - The sailboats in the distance look beautiful.
+      - The water here is so clear, you can even see the fish.
+      - Let's go find some seashells.
+      - Taking a walk on the beach at sunset must be very romantic.
+      - I heard the seafood here is very fresh, let's go try some.
+      - The tide is coming in, let's head towards the shore.
+  - sceneId: 10
+    scene:  Local Events and Festivals
+    pair1:
+      - For now,Could you please provide me with the context of the local event or festival you’re attend,like halloween,concert or friend party,or something else?Please provide the context
+      - Please describe the activities in your mind.
+    pair2:
+      - Do you have a specific situation in your mind,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Attending Events
+      - Celebrating Festivals
+      - Learning Culture
+    phrases:
+      - Are there any events today?
+      - Is there anything special about this festival?
+      - Where is the celebration being held?
+      - How can I buy tickets?
+      - What time does the performance start?
+      - What traditional food is there?
+      - It's really lively here.
+      - Are there any folk activities?
+      - Happy holidays!
+      - What time does the event end?
+  - sceneId: 11
+    scene: Museum or Art Gallery
+    pair1:
+      - For now,Do you have a specific situation in your mind,like asking for introduction manual,pharases related roadmap,pharases related to comment on exhibit,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Visiting
+      - Guided Tour
+      - Buying Tickets
+    phrases:
+      - How much is the admission fee?
+      - Do you have audio guides?
+      - Who created this artwork?
+      - Where is the museum's most prized piece?
+      - Is photography allowed?
+      - Are there any special exhibitions here?
+      - How long does the visit take?
+      - Could you give us an introduction?
+      - These works are truly exquisite.
+      - Where is the souvenir shop?
+  - sceneId: 12
+    scene: cafes
+    pair1:
+      - For now,Do you have a specific situation in your mind,like asking for a menu,Ice or hot drinks,other products,free to ask.
+      - Please describe the situation in your mind.
+    intentions:
+      - Ordering Coffee
+      - Resting
+      - Socializing
+    phrases:
+      - I'll have a latte, please.
+      - Do you have Wi-Fi?
+      - Could I see the menu, please?
+      - Are refills allowed?
+      - Is my coffee ready?
+      - How long can I sit here?
+      - Could you take a picture for us?
+      - Where is the restroom?
+      - Check, please. Thank you.
+      - It tastes really good.
