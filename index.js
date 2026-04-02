@@ -181,8 +181,6 @@ async function main() {
                     将以下常用语列表内容翻译成西班牙语和阿拉伯语。
 
                     请严格确保：
-                    - original只包含西班牙语字符
-                    - translated只包含阿拉伯语字符
                     - 不混入任何其他语言
 
                     You must answer strictly in the following JSON format: {
