@@ -9,6 +9,7 @@
     "start2": "node index_flux.js"
   },
   "dependencies": {
+    "js-yaml": "^4.1.0",
     "mysql2": "^3.20.0",
     "openai": "^4.77.0"
   },

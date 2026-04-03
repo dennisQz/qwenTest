@@ -1,12 +1,27 @@
 import OpenAI from 'openai';
-import process from 'process';
+import fs from 'fs';
+import yaml from 'js-yaml';
+import mysql from 'mysql2/promise';
+
+
+const dbConfig = {
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: 'root123456',
+  database: 'langchain_chat',
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
+};
+
+const pool = mysql.createPool(dbConfig);
 
 const openai = new OpenAI({
     apiKey: 'sk-808701fbaed240688aaf3a075dad0a6b',
     baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1'
 });
 
-let reasoningContent = '';
 let langMap = {
     "zh": "中文",
     "zh-cn": "中文",
@@ -53,6 +68,7 @@ let langMap = {
     "hi": "印地语",
     "bn": "孟加拉语",
     "ta": "泰米尔语",
+
     "te": "泰卢固语",
     "mr": "马拉地语",
     "gu": "古吉拉特语",
@@ -119,20 +135,184 @@ let langMap = {
     "so": "索马里语"
 };
 
+
+
+const LOG_FILE = 'request_log.txt';
+
+function log(data, level = 'INFO') {
+    const logEntry = {
+        timestamp: new Date().toISOString(),
+        level: level,
+        ...data
+    };
+    const formatted = JSON.stringify(logEntry, null, 2);
+    fs.appendFileSync(LOG_FILE, formatted + '\n');
+}
+
+
+let sceneId = 1;
+let targetLanguage = 'zh';
+let nativeLanguage = "tr";
+
+let targetLangName = langMap[targetLanguage]
+let nativeLangName = langMap[nativeLanguage]
+
 let phrases = [];
 let fixList = [];
 let intentions = [];
 
-async function main() {
-    const startTime = Date.now();
+async function getSceneById(sceneId) {
     try {
-        const messages = [
+        const yamlContent = fs.readFileSync('./scene-phrases.yml', 'utf8');
+        const data = yaml.load(yamlContent);
+        return data.scenes.find(scene => scene.sceneId === sceneId);
+    } catch (error) {
+        console.error('Error reading scene-phrases.yml:', error);
+        return null;
+    }
+}
+
+function extractSceneData(scene) {
+    if (!scene) {
+        return {
+        };
+    }
+
+    let obj = {
+        scene: scene.scene || '',
+        phrases: scene.phrases || [],
+        intentions: scene.intentions || [],
+    }
+
+    let lst = [
+        `Could you provide me with 10 common phrases I can use in ${scene.scene}?`,
+        `Fantastic! Here are 10 common phrases related to ${scene.scene}, along with ${targetLangName} translations：`,
+    ]
+    if (Array.isArray(scene.pair1)) {
+        lst.push(...scene.pair1)
+    } 
+    if (Array.isArray(scene.pair2)) {
+        lst.push(...scene.pair2)
+    }
+    obj.fixList = lst; 
+    
+    return obj;
+}
+
+async function initializeSceneData(sceneId) {
+    const scene = await getSceneById(sceneId);
+    const data = extractSceneData(scene);
+    
+    phrases = data.phrases;
+    intentions = data.intentions;
+    fixList = data.fixList;
+    
+    return data;
+}
+
+async function translateApi(messages, type){
+    
+    let startTime = Date.now();
+
+    const response = await openai.chat.completions.create({
+        model: "qwen-turbo",
+        messages,
+        stream: false,
+        top_p: 1,
+        temperature: 0.3,
+        enable_search: false,
+        enable_thinking: false,
+        thinking_budget: 4000,
+        result_format: "message"
+    });
+    const content = response.choices[0]?.message?.content;
+    // if (response.usage) {
+    //     log('Usage:', response.usage);
+    // }
+    console.log(`\n ${type} Answer Content:`,  content);
+    const endTime = Date.now();
+    console.log(`\n ================================================================= 总用时: ${endTime - startTime}ms `);
+    return JSON.parse(content)
+}
+
+async function queryExit(native_language, target_language, sceneId) {
+    let connection;
+    try {
+        connection = await pool.getConnection();
+        const [rows] = await connection.query(`SELECT id, scene_id, native_language, target_language FROM scene_default_phrases where scene_id = ${sceneId} and native_language = "${native_language}" and target_language = "${target_language}"`);
+        return rows;
+    } catch (error) {
+        console.error('查询失败:', error);
+        throw error;
+    } finally {
+        if (connection) {
+            connection.release();
+        }
+    }
+}
+
+async function insertData(sceneId, nativeLanguage, targetLanguage, phrases, intentions, defaultPhrases, pair1, pair2) {
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [result] = await connection.query(
+      `INSERT INTO scene_default_phrases 
+       (scene_id, native_language, target_language, phrases, intentions, default_phrases, pair1, pair2) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [sceneId, nativeLanguage, targetLanguage, phrases, intentions, defaultPhrases, pair1, pair2]
+    );
+    return result;
+  } catch (error) {
+    console.error('插入失败:', error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
+
+function getSysPrompt(langName) {
+    return [
+        {
+            "role": "system",
+            "content": `你是一个专业翻译助手，精通${langName}。
+                重要规则：
+                1. 禁止在任何翻译中混入其他语言字符
+                2. 生成翻译后必须验证语言正确性
+            `
+        },
+        {
+            "role": "user",
+            "content": `
+                将以下常用语列表内容翻译成${langName}。
+                - 常用语列表: [
+                    ${phrases.join(',\n')}
+                ]
+                请严格确保：
+                - 翻译内容只包含${langName}字符
+                - 不混入任何其他语言
+
+                You must answer strictly in the following JSON format: {
+                    "phrases": (type: array of string)
+                }`
+        }
+    ];
+}
+
+async function start (){
+    try {
+        
+        console.log('sceneId:', sceneId, ' --- nativeLangName:', nativeLangName, ' ---  targetLangName: ', targetLangName);
+
+        await initializeSceneData(sceneId);
+        const nativeMessages = [
             {
                 "role": "system",
-                "content": `你是一个专业翻译助手，精通西班牙语和阿拉伯语。
+                "content": `你是一个专业翻译助手，精通${targetLangName}和${nativeLangName}。
                     重要规则：
-                    1. 所有original字段必须是100%西班牙语
-                    2. 所有translated字段必须是100%阿拉伯语
+                    1. 所有original字段必须是100%${nativeLangName}
+                    2. 所有translated字段必须是100%${targetLangName}
                     3. 禁止在任何翻译中混入其他语言字符
                     4. 生成翻译后必须验证语言正确性
                 `
@@ -140,31 +320,29 @@ async function main() {
             {
                 "role": "user",
                 "content": `
-                    将以下常用语列表内容翻译成西班牙语和阿拉伯语。
+                    将以下常用语列表内容翻译成${nativeLangName}及${targetLangName}。
                     - 常用语列表: [
                         ${phrases.join(',\n')}
                     ]
 
                     请严格确保：
-                    - original只包含西班牙语字符
-                    - translated只包含阿拉伯语字符
+                    - original只包含${nativeLangName}字符
+                    - translated只包含${targetLangName}字符
                     - 不混入任何其他语言
 
                     You must answer strictly in the following JSON format: {
-                        "phrases": (type: array of dev.langchain4j.scene.aiservice.model.SceneTranslationPhrase: {
-                        "original": (type: string),
-                        "translated": (type: string)
+                        "phrases": (type: array of objct: {
+                            "original": (type: string),
+                            "translated": (type: string)
                         }),
-                        "intentions": (type: array of string),
-                        "fixedTextList": (type: array of string)
                     }`
             }
         ];
-
+        
         const intentionMsgs = [
             {
                 "role": "system",
-                "content": `你是一个专业翻译助手，精通西班牙语。
+                "content": `你是一个专业翻译助手，精通${nativeLangName}。
                     重要规则：
                     3. 禁止在任何翻译中混入其他语言字符
                     4. 生成翻译后必须验证语言正确性
@@ -173,15 +351,14 @@ async function main() {
             {
                 "role": "user",
                 "content": `
-                    
-                    - 意图列表（翻译成西班牙语）: [
+                    将以下intentions内容翻译成${nativeLangName}。
+                    - intentions: [
                         ${intentions.join(',\n')}
                     ]
 
-                    将以下常用语列表内容翻译成西班牙语和阿拉伯语。
-
                     请严格确保：
                     - 不混入任何其他语言
+                    - 返回JSON格式数据
 
                     You must answer strictly in the following JSON format: {
                         "intentions": (type: array of string)
@@ -191,7 +368,7 @@ async function main() {
         const fixListMsgs = [
             {
                 "role": "system",
-                "content": `你是一个专业翻译助手，精通西班牙语。
+                "content": `你是一个专业翻译助手，精通${nativeLangName}。
                     重要规则：
                     3. 禁止在任何翻译中混入其他语言字符
                     4. 生成翻译后必须验证语言正确性
@@ -200,9 +377,10 @@ async function main() {
             {
                 "role": "user",
                 "content": `
-                    将以下意图列表内容翻译成西班牙语。
-                    - 意图列表: [
-                        ${fixedTextList.join(',\n')}
+                    将以下fixedTextList内容翻译成${nativeLangName}。
+
+                    - fixedTextList: [
+                        ${fixList.join(',\n')}
                     ]
 
                     请严格确保：
@@ -214,31 +392,108 @@ async function main() {
             }
         ];
 
-        const response = await openai.chat.completions.create({
-            model: "qwen-plus",
-            messages,
-            stream: false,
-            top_p: 1,
-            temperature: 0.3,
-            enable_search: false,
-            enable_thinking: false,
-            thinking_budget: 4000,
-            result_format: "message"
-        });
+        const rps = await translateApi(getSysPrompt(nativeLangName), 'native 常用语：')
+        const rps2 = await translateApi(getSysPrompt(targetLangName), 'target 常用语：')
 
-        console.log('=======================Response=======================');
-        
-        const content = response.choices[0]?.message?.content;
-        
-        if (response.usage) {
-            console.log('Usage:', response.usage);
+        let phrasesLst = [];
+        if (Array.isArray(rps.phrases) && Array.isArray(rps2.phrases) ) {
+            for (let s = 0; s < 10; s++) {
+                phrasesLst.push({
+                    "original": rps.phrases[s],
+                     "translated": rps2.phrases[s],
+                })
+            }
         }
 
-        console.log('\nAnswer Content:', content);
-        const endTime = Date.now();
-        console.log(`\n总用时: ${endTime - startTime}ms`);
+
+        const response1 = await translateApi(intentionMsgs, '意图：')
+        const response2 = await translateApi(fixListMsgs, '固定短语：')
+        
+        // console.log('response ', response, intentionResponse, fixResponse);
+        
+        log('=======================Response=======================');
+        
+        let defaultPhrases = null;
+        let pair1 = null;
+        let pair2 = null;
+
+        if (Array.isArray(response2.fixedTextList) && response2.fixedTextList.length > 0) {
+            defaultPhrases = response2.fixedTextList.splice(0,2)
+            pair1 = response2.fixedTextList.splice(0,2)
+            pair2 = response2.fixedTextList.splice(0,2)
+
+            if (Array.isArray(defaultPhrases) && defaultPhrases.length > 0) {
+                defaultPhrases = JSON.stringify(defaultPhrases)
+            } else {
+                defaultPhrases = null
+            }
+            
+            if (Array.isArray(pair1) && pair1.length === 2) {
+                pair1 = JSON.stringify(pair1)
+            } else {
+                pair1 = null
+            }
+            
+            if (Array.isArray(pair2) && pair2.length === 2) {
+                pair2 = JSON.stringify(pair2)
+            } else {
+                pair2 = null
+            }
+        }
+
+        const results = await insertData(
+            sceneId,
+            nativeLanguage,
+            targetLanguage,
+            JSON.stringify(phrasesLst),
+            JSON.stringify(response1.intentions),
+            defaultPhrases,
+            pair1,
+            pair2
+        );
+        return results;
     } catch (error) {
         console.error('Error:', error);
+        process.exit(1);
+    }
+}
+
+
+async function main() {
+    try {
+        let defaultLang = ['ko','it','ru', 'zh', 'tr', 'ja', 'en', 'ar', 'fr', 'de', 'es']
+
+        for (let m = 0; m < defaultLang.length; m++) {
+                nativeLanguage = defaultLang[m];
+
+            for (let j = 0; j < defaultLang.length; j++) {
+                targetLanguage = defaultLang[j];
+
+                if (nativeLanguage === targetLanguage) {
+                    continue;
+                }
+                // 判断是否存在
+                
+                for (let r = 1; r <= 12; r++) {
+                    sceneId = r;
+                    targetLangName = langMap[targetLanguage]
+                    nativeLangName = langMap[nativeLanguage]
+                    let exits = await queryExit(nativeLanguage, targetLanguage, sceneId)
+                    
+                    if (exits.length){
+                        console.log('数据已存在：：：：：',  nativeLanguage, targetLanguage, sceneId);
+                    } else {
+                        await start();                    
+                    }
+                }
+                
+            }   
+        }
+        
+    } catch (error) {
+        console.error('Error:', error);
+    } finally {
+        await pool.end();
     }
 }
 
