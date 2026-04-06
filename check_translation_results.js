@@ -176,42 +176,76 @@ async function getTranslations(languagePair = null, limit = 20) {
     }
 }
 
+async function updateCheckResult(id , checkResult) {
+    if (checkResult >0) {
+        checkResult = 200
+    } else {
+        checkResult = 500
+    }
+  let connection;
+  try {
+    connection = await pool.getConnection();
+    const [result] = await connection.query(
+      `UPDATE scene_default_phrases 
+       SET check_result = ?
+       WHERE id = ?`,
+      [checkResult, id]
+    );
+    return result;
+  } catch (error) {
+    console.error('更新失败:', error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.release();
+    }
+  }
+}
 
-async function verifyTranslation(text, sourceLang) {
+
+async function verifyTranslation(text, sourceLang, targetLang, model = 'qwen-plus') {
     try {
         
         console.log(`检测语言：${sourceLang}`);
         console.log(`检测内容：${text}`);
         
         const completion = await openai.chat.completions.create({
-            model: 'qwen-plus',
+            model: model,
             messages: [
                 {
                     role: 'system',
-                    content: `你是一个文字检测助手，精通各种语言文字。
+                    content: `你是一个严格的字符集检测助手。
                         主要任务：
-                        检测用户提供内容checkText中文字是否是${sourceLang}。
-                        判断规则：
-                            - 只检测checkText实际的文字内容，忽略特殊字符、标点符号及阿拉伯数字。
-                            - 不用管检测文字的含义，只检测文字内容
-                        如果checkText内容中包含非${sourceLang}的文字（即文字部分不匹配目标语言），返回0；
-                        否则返回1；
+                        判断用户提供的文本 (checkText) 中的字母/文字字符是否全部属于【${sourceLang}】的字符集。
 
-                        正确案例（文字部分全部是英语）：
-                        lang: 英语, content: "Does this bus go to the terminal?"
-                        正确案例（包含阿拉伯数字和标点，仍返回1）：
-                        lang: 英语, content: "Order 123 items, please!"
-                        正确案例（包含特殊符号，仍返回1）：
-                        lang: 英语, content: "Hello @World #2024!"
-                        错误案例（文字部分包含中文，应返回0）：
-                        lang: 英语, content: "Does 你好 this bus go to the terminal?"
-                        错误案例（文字部分包含日文，应返回0）：
-                        lang: 英语, content: "Hello こんにちは world"
+                        判断规则（非常重要）：
+                        1. 绝对不要翻译文本！绝对不要去理解文本的含义！你只能检查字符的外观字形和所属的语言字符集（Unicode范围）。
+                        2. 只检查文字部分。完全忽略标点符号、特殊符号（如@、#、空格、换行符等）以及阿拉伯数字。
+                        3. 如果 checkText 中的所有文字字符都属于【${sourceLang}】的常规字符集（例如韩语只有韩文/Hangul，没有汉字/假名/拉丁字母等），则返回 1。
+                        4. 如果 checkText 中包含哪怕一个不属于【${sourceLang}】的文字字符（比如检测韩语时出现了真实的中文字符或英文字母），则返回 0。
+                        5. 【防幻觉警告】绝不能自行脑补、翻译或联想文本内容！如果文本提到“${targetLang}翻译”，但后面给出的词语依然是纯中文（如“入住 退房”），你必须将其判定为全中文！如果韩文文本提到“중국어”(中文)，但它本身是用韩文字母写的，你必须将其判定为全韩文！只能基于【实际给出的字符字形】做判断！
+
+                        示例：
+                        目标语言：英语, checkText: "Does this bus go to the terminal?" -> 1
+                        目标语言：英语, checkText: "Order 123 items, please!" -> 1
+                        目标语言：英语, checkText: "Hello こんにちは world" -> 0 (包含日文字符)
+                        目标语言：韩语, checkText: "레스토랑에서 사용할 수 있는 10가지" -> 1 (全是韩文，忽略数字和空格)
+                        目标语言：韩语, checkText: "이것은 test 입니다" -> 0 (包含英文字符)
+                        目标语言：韩语, checkText: "이것은 测试 입니다" -> 0 (包含中文字符)
+                        目标语言：中文, checkText: "以下是与酒店相关的常用短语，以及${targetLang}翻译：入住 退房" -> 1 (全是中文字符，不要脑补${targetLang})
+                        目标语言：韩语, checkText: "중국어 번역이 있습니다: 식사 주문" -> 1 (全是韩文字符，没有真正的中文字符，不要脑补汉字)
+
+                        【严格执行】：
+                        请详细分析字词检查的过程。
+                        第一步：严格检查所有文字字词的外观字形；
+                        第二步：判断是否所有文字字词均属于【${sourceLang}】的常规字符集；
+                        第三步：根据前两步得出结论。绝不能因为文本提及其他语言而误判。
 
                         You must answer strictly in the following JSON format: {
+                            "msg": "检测为0的原因",
                             "content": 0 or 1
-                            "msg": 原因
                         }
+                        注意：必须且只能返回纯 JSON 格式数据，绝对不要使用 Markdown 代码块（如 \`\`\`json），不要包含任何其他多余文本。
                     `
                 },
                 {
@@ -222,10 +256,22 @@ async function verifyTranslation(text, sourceLang) {
             temperature: 0.1
         });
 
-        const evaluation = JSON.parse(completion.choices[0].message.content);
-        return evaluation;
+        let rawContent = completion.choices[0].message.content;
+        // 清洗可能存在的 markdown 代码块包裹
+        rawContent = rawContent.replace(/```json/gi, '').replace(/```/g, '').trim();
+        
+        try {
+            const evaluation = JSON.parse(rawContent);
+            console.error('检测结果: ', evaluation);
+
+            return evaluation;
+        } catch (parseError) {
+            console.error('JSON解析失败，原始返回内容:', rawContent);
+            return { content: 0, msg: 'JSON解析失败' };
+        }
     } catch (error) {
         console.error('校验翻译时出错:', error);
+        return { content: 0, msg: '校验接口请求出错' };
     }
 }
 
@@ -233,11 +279,13 @@ async function main() {
     
 
     // let defaultLang = ['ko','it','ru', 'zh', 'tr', 'ja', 'en', 'ar', 'fr', 'de', 'es']
-    let defaultLang = ['ko', 'zh']
+    let defaultLang = ['zh', 'ja']
     let nativeLang;
     let targetLang;
     let tarName, navName;
     let minId = 1;
+    let stop = false;
+
     try {
         for (let m = 0; m < defaultLang.length; m++) {
             nativeLang = defaultLang[m];
@@ -256,7 +304,6 @@ async function main() {
                     target: targetLang
                 };
                 // 先查询数据
-
                 const results = await getTranslations(languagePair);
 
                 if (Array.isArray(results)){
@@ -266,19 +313,27 @@ async function main() {
                     
                     for (let m = 0; m < results.length; m++) {
                         let row = results[m];
-                        if (row.id > minId){
-                            console.log(`开始检测: ${row.id}`);
-                            
+                        console.log('row.check_result>> ', row.check_result);
+                        
+                        if (row.check_result != 200){
+                            console.log(`开始检测>>Id: ${row.id} scene_id: ${row.scene_id}  nativeLang: ${row.native_language}  targetLang: ${row.target_language}`);
+
+                            let sourceCont = []
+                            let tarCont = []
+                            row.phrases.forEach((el) => {
+                                sourceCont.push(`${el.original}`)
+                                tarCont.push(`${el.translated}`)
+                            })
                             // 继续检测
-                            let content = `${row.default_phrases.join(' ')}\n${row.intentions.join(' ')}\n${(row.pair1 && row.pair1.length)?row.pair1.join(' ') :''}\n${(row.pair2 && row.pair2.length)?row.pair2.join(' ') :''}
+                            let content = `${sourceCont.join('\n')}\n${row.default_phrases.join(' ')}\n${row.intentions.join(' ')}\n${(row.pair1 && row.pair1.length)?row.pair1.join(' ') :''}\n${(row.pair2 && row.pair2.length)?row.pair2.join(' ') :''}
                             `
-                            let result = await verifyTranslation(content, navName)
-                            console.log('检测结果', result);
-                            
-                            // let result = await verifyTranslation(content, tarName)
+                            let result = await verifyTranslation(content, navName, tarName)                            
                             if (result.content == 0) {
-                                break;
+                                // 检测第二遍
+                                result = await verifyTranslation(content, navName, tarName, 'qwen-max')
+                                
                             }
+                            await updateCheckResult(row.id, result.content)
                         }
                     }
 

@@ -64,16 +64,11 @@ let langMap = {
     "vi": "越南语",
     "th": "泰语",
     "id": "印度尼西亚语",
+    "mr": "马拉地语",
     "ms": "马来语",
     "hi": "印地语",
-    "bn": "孟加拉语",
-    "ta": "泰米尔语",
-
-    "te": "泰卢固语",
-    "mr": "马拉地语",
-    "gu": "古吉拉特语",
-    "kn": "卡纳达语",
-    "ml": "马拉雅拉姆语",
+    "uz": "乌兹别克语",
+    "fa": "波斯语",
     "uk": "乌克兰语",
     "cs": "捷克语",
     "el": "希腊语",
@@ -82,6 +77,7 @@ let langMap = {
     "sv": "瑞典语",
     "da": "丹麦语",
     "fi": "芬兰语",
+
     "no": "挪威语",
     "nb": "挪威语",
     "bg": "保加利亚语",
@@ -94,9 +90,11 @@ let langMap = {
     "tl": "菲律宾语",
     "fil": "菲律宾语",
     "sw": "斯瓦希里语",
-    "fa": "波斯语",
-    "ur": "乌尔都语",
+    
+  
     "pa": "旁遮普语",
+    "bn": "孟加拉语",
+
     "bn-in": "孟加拉语",
     "az": "阿塞拜疆语",
     "be": "白俄罗斯语",
@@ -112,7 +110,7 @@ let langMap = {
     "mn": "蒙古语",
     "ne": "尼泊尔语",
     "tg": "塔吉克语",
-    "uz": "乌兹别克语",
+    
     "cy": "威尔士语",
     "zu": "祖鲁语",
     "af": "南非荷兰语",
@@ -132,7 +130,13 @@ let langMap = {
     "mt": "马耳他语",
     "or": "奥里亚语",
     "gd": "苏格兰盖尔语",
-    "so": "索马里语"
+    "so": "索马里语",
+    "te": "泰卢固语",   // 印度
+    "ta": "泰米尔语",   // 印度
+    "ur": "乌尔都语",   // 印度
+    "gu": "古吉拉特语", // 印度
+    "kn": "卡纳达语",   // 印度
+    "ml": "马拉雅拉姆语" // 印度
 };
 
 
@@ -215,7 +219,7 @@ async function translateApi(messages, type){
     let startTime = Date.now();
 
     const response = await openai.chat.completions.create({
-        model: "qwen-turbo",
+        model: "qwen-plus",
         messages,
         stream: false,
         top_p: 1,
@@ -226,13 +230,16 @@ async function translateApi(messages, type){
         result_format: "message"
     });
     const content = response.choices[0]?.message?.content;
+    // 清洗可能存在的 markdown 代码块包裹
+    const rawContent = content.replace(/```json/gi, '').replace(/```/g, '').trim();
+
     // if (response.usage) {
     //     log('Usage:', response.usage);
     // }
-    console.log(`\n ${type} Answer Content:`,  content);
+    console.log(`\n ${type} Answer Content:`,  rawContent);
     const endTime = Date.now();
     console.log(`\n ================================================================= 总用时: ${endTime - startTime}ms `);
-    return JSON.parse(content)
+    return JSON.parse(rawContent)
 }
 
 async function queryExit(native_language, target_language, sceneId) {
@@ -461,7 +468,19 @@ async function start (){
 
 async function main() {
     try {
-        let defaultLang = ['ko','it','ru', 'zh', 'tr', 'ja', 'en', 'ar', 'fr', 'de', 'es']
+        // pt: 1320 -> 1585 已检测
+        // nl: 1586 -> 1873 已检测
+        // th: 1874 -> 1912
+        // vi: 
+        // pl: 
+        //  "id": "印度尼西亚语",
+        //     "mr": "马拉地语",
+        //     "ms": "马来语",
+        //     "hi": "印地语",
+        
+        let defaultLang = ['fa','uz','uk','cs','el','he','hu','sv','da','fi',
+            'hi','ms','mr','id','th','vi','pl','nl','pt', 'ko',
+            'it','ru', 'zh', 'tr', 'ja', 'en', 'ar', 'fr', 'de', 'es']
 
         for (let m = 0; m < defaultLang.length; m++) {
                 nativeLanguage = defaultLang[m];
